@@ -2,8 +2,17 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Comments.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="CommentLogLocation" Type="System.String" Scope="Application">
+    <Setting Name="CommentLogLocation" Type="System.String" Scope="User">
       <Value Profile="(Default)">C:\CommentLogs</Value>
+    </Setting>
+    <Setting Name="positionLeft" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="positionTop" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="textEditor" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Notepad++.exe</Value>
     </Setting>
   </Settings>
 </SettingsFile>

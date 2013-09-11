@@ -13,8 +13,18 @@ namespace Comments
     public partial class Comments : Form
     {
         enum Direction { Up, Down, Left, Right, Nondirectional };
-        string _todaysLog = Path.Combine(Properties.Settings.Default.CommentLogLocation, getCommentLogName(DateTime.Now));
+        string _todaysLog = Path.Combine(CommentSetting.CommentLogLocation, getCommentLogName(DateTime.Now));
         static bool _isFirstRun = true;
+        static string _messageText = @"/exit, /e, or /x to Exit Application. \n" +
+                                      "/todayslog or /t for Today's Log. \n" + 
+                                      "/logs or /l for Log Directory. \n" +
+                                      "/yolo or /y for Yesterday's Log. \n" + 
+                                      "/help or /h to Display This Again. \n" + 
+                                      "Repositioning: \n" + 
+                                      "  right #\n" +
+                                      "  left #\n" + 
+                                      "  up #\n" +
+                                      "  down #\n"; 
 
         public Comments()
         {
@@ -25,8 +35,8 @@ namespace Comments
         {
             //Position textbox
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-            this.Top = Screen.PrimaryScreen.WorkingArea.Height - this.Height;
-            this.Left = (Screen.PrimaryScreen.WorkingArea.Width/2 - this.Width) + 400;
+            this.Top = CommentSetting.PositionTop;
+            this.Left = CommentSetting.PositionLeft;
 
             //If current file doesn't exist this is probably the first start up of the day.
             if (!File.Exists(_todaysLog))
@@ -51,15 +61,15 @@ namespace Comments
             if (!File.Exists(_todaysLog))
                 txtComments.Text = "No log for today.";
             else
-                System.Diagnostics.Process.Start("notepad++.exe", _todaysLog);
+                System.Diagnostics.Process.Start(CommentSetting.TextEditor, _todaysLog);
         }
 
         private void ShowAllLogs()
         {
-            if (!Directory.Exists(Properties.Settings.Default.CommentLogLocation))
-                Directory.CreateDirectory(Properties.Settings.Default.CommentLogLocation);
+            if (!Directory.Exists(CommentSetting.CommentLogLocation))
+                Directory.CreateDirectory(CommentSetting.CommentLogLocation);
 
-            System.Diagnostics.Process.Start("explorer.exe", Properties.Settings.Default.CommentLogLocation);
+            System.Diagnostics.Process.Start("explorer.exe", CommentSetting.CommentLogLocation);
         }
 
         private void Comments_MouseEnter(object sender, EventArgs e)
@@ -74,7 +84,6 @@ namespace Comments
 
         private void button1_Click(object sender, EventArgs e)
         {
-            string messageText = string.Format(@"/exit, /e, or /x to Exit Application. {0}/todayslog or /t for Today's Log. {0}/logs or /l for Log Directory. {0}/yolo or /y for Yesterday's Log. {0}/help or /h to Display This Again.", Environment.NewLine);
             if (!String.IsNullOrWhiteSpace(txtComments.Text))
             {
                 var comment = txtComments.Text.Trim();
@@ -87,7 +96,7 @@ namespace Comments
                 else if (comment == "/logs" || comment == "/l")
                     ShowAllLogs();
                 else if (comment == "/help" || comment == "/h")
-                    MessageBox.Show(messageText, "Help Menu");
+                    MessageBox.Show(_messageText, "Help Menu");
                 else if (comment == "/yolo" || comment == "/y" || comment == "/yesterday")
                     displayPreviousDayLog();
                 else if (direction != Direction.Nondirectional)
@@ -105,26 +114,29 @@ namespace Comments
             int numberOfPixels = Int32.Parse(Regex.Match(comment, @"\d+$").Value);
 
             if (direction == Direction.Up)
-                this.Top = this.Top - numberOfPixels;
+                CommentSetting.PositionTop = this.Top - numberOfPixels;
             else if (direction == Direction.Right)
-                this.Left = this.Left + numberOfPixels;
+                CommentSetting.PositionLeft = this.Left + numberOfPixels;
             else if (direction == Direction.Left)
-                this.Left = this.Left - numberOfPixels;
+                CommentSetting.PositionLeft = this.Left - numberOfPixels;
             else if (direction == Direction.Down)
-                this.Top = this.Top + numberOfPixels;
+                CommentSetting.PositionTop = this.Top + numberOfPixels;            
             else
                 throw new Exception("Wtf are you doing passing a nondirectional direction to this method?");
+
+            this.Top = CommentSetting.PositionTop;
+            this.Left = CommentSetting.PositionLeft;
         }
 
         private Direction directionTranslator(string checkText)
         {
-            if (Regex.Match(checkText, "^up.*[0-9]+$").Success)
+            if (Regex.Match(checkText, @"^up \d+$").Success)
                 return Direction.Up;
-            else if (Regex.Match(checkText, "^left.*[0-9]+$").Success)
+            else if (Regex.Match(checkText, @"^left \d+$").Success)
                 return Direction.Left;
-            else if (Regex.Match(checkText, "^right.*[0-9]+$").Success)
+            else if (Regex.Match(checkText, @"^right \d+$").Success)
                 return Direction.Right;
-            else if (Regex.Match(checkText, "^down.*[0-9]+$").Success)
+            else if (Regex.Match(checkText, @"^down \d+$").Success)
                 return Direction.Down;
             else
                 return Direction.Nondirectional;
@@ -133,17 +145,17 @@ namespace Comments
         private void displayPreviousDayLog()
         {
             var yesterday = DateTime.Now.AddDays(-1);
-            var yesterdaysLog = Path.Combine(Properties.Settings.Default.CommentLogLocation, getCommentLogName(yesterday));
+            var yesterdaysLog = Path.Combine(CommentSetting.CommentLogLocation, getCommentLogName(yesterday));
 
             if(File.Exists(yesterdaysLog))
-                System.Diagnostics.Process.Start("notepad++.exe", yesterdaysLog);            
+                System.Diagnostics.Process.Start(CommentSetting.TextEditor, yesterdaysLog);           
         }
 
         public void InsertLog(string comment)
         {
             //Create directory if needed.
-            if (!Directory.Exists(Properties.Settings.Default.CommentLogLocation))
-                Directory.CreateDirectory(Properties.Settings.Default.CommentLogLocation);
+            if (!Directory.Exists(CommentSetting.CommentLogLocation))
+                Directory.CreateDirectory(CommentSetting.CommentLogLocation);
 
             //Write comment to file.
             using (StreamWriter datFile = new StreamWriter(_todaysLog, File.Exists(_todaysLog)))
