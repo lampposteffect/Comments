@@ -70,5 +70,65 @@ namespace Comments.Properties {
                 this["textEditor"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("60")]
+        public int reminderMinutes {
+            get {
+                return ((int)(this["reminderMinutes"]));
+            }
+            set {
+                this["reminderMinutes"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Don\'t forget to log your time.\\nDon\'t forget to stretch.")]
+        public string reminderText {
+            get {
+                return ((string)(this["reminderText"]));
+            }
+            set {
+                this["reminderText"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool displayPreviousLog {
+            get {
+                return ((bool)(this["displayPreviousLog"]));
+            }
+            set {
+                this["displayPreviousLog"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool logApplicationStartAndStop {
+            get {
+                return ((bool)(this["logApplicationStartAndStop"]));
+            }
+            set {
+                this["logApplicationStartAndStop"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool reminderEnabled {
+            get {
+                return ((bool)(this["reminderEnabled"]));
+            }
+            set {
+                this["reminderEnabled"] = value;
+            }
+        }
     }
 }

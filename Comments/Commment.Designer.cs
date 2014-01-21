@@ -51,7 +51,7 @@
             this.btnSubmit.Size = new System.Drawing.Size(1, 1);
             this.btnSubmit.TabIndex = 1;
             this.btnSubmit.UseVisualStyleBackColor = true;
-            this.btnSubmit.Click += new System.EventHandler(this.button1_Click);
+            this.btnSubmit.Click += new System.EventHandler(this.btnSubmit_Click);
             // 
             // Comments
             // 

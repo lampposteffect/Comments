@@ -43,6 +43,54 @@ namespace Comments
                 Properties.Settings.Default.Save();
             }
         }
-        
+        public static int ReminderIntervalInMinutes
+        {
+            get { return Properties.Settings.Default.reminderMinutes; }
+            set
+            {
+                Properties.Settings.Default.reminderMinutes = value;
+                Properties.Settings.Default.Save();
+            }
+        }
+        public static int ReminderIntervalInMilliseconds
+        {
+            get { return ReminderIntervalInMinutes * 60 * 1000; }
+        }
+        public static string ReminderText
+        {
+            get { return Properties.Settings.Default.reminderText; }
+            set
+            {
+                Properties.Settings.Default.reminderText = value;
+                Properties.Settings.Default.Save();
+            }
+        }
+        public static bool DisplayPreviousLog
+        {
+            get { return Properties.Settings.Default.displayPreviousLog; }
+            set
+            {
+                Properties.Settings.Default.displayPreviousLog = value;
+                Properties.Settings.Default.Save();
+            }
+        }
+        public static bool LogApplicationStartAndStop
+        {
+            get { return Properties.Settings.Default.logApplicationStartAndStop; }
+            set
+            {
+                Properties.Settings.Default.logApplicationStartAndStop = value;
+                Properties.Settings.Default.Save();
+            }
+        }
+        public static bool ReminderEnabled
+        {
+            get { return Properties.Settings.Default.reminderEnabled; }
+            set
+            {
+                Properties.Settings.Default.reminderEnabled = value;
+                Properties.Settings.Default.Save();
+            }
+        }
     }
 }

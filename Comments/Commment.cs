@@ -12,23 +12,26 @@ namespace Comments
 {
     public partial class Comments : Form
     {
+        Timer reminderTimer = new Timer();
         enum Direction { Up, Down, Left, Right, Nondirectional };
-        string _todaysLog = Path.Combine(CommentSetting.CommentLogLocation, getCommentLogName(DateTime.Now));
-        static bool _isFirstRun = true;
-        static string _messageText = @"/exit, /e, or /x to Exit Application. \n" +
-                                      "/todayslog or /t for Today's Log. \n" + 
-                                      "/logs or /l for Log Directory. \n" +
-                                      "/yolo or /y for Yesterday's Log. \n" + 
-                                      "/help or /h to Display This Again. \n" + 
-                                      "Repositioning: \n" + 
-                                      "  right #\n" +
-                                      "  left #\n" + 
-                                      "  up #\n" +
-                                      "  down #\n"; 
+        string _todaysLog = Path.Combine(CommentSetting.CommentLogLocation, LogDisplayer.GetCommentLogName(DateTime.Now));
 
         public Comments()
         {
             InitializeComponent();
+            reminderTimer.Interval = CommentSetting.ReminderIntervalInMilliseconds;
+            reminderTimer.Enabled = CommentSetting.ReminderEnabled;
+            reminderTimer.Tick += reminder_Tick;
+
+#if !DEBUG
+            if (CommentSetting.LogApplicationStartAndStop)
+                InsertLog("*Application Start*");
+#endif
+        }
+
+        void reminder_Tick(object sender, EventArgs e)
+        {
+            MessageBox.Show(CommentSetting.ReminderText, "Reminder!");
         }
 
         private void Comments_Load(object sender, EventArgs e)
@@ -39,37 +42,10 @@ namespace Comments
             this.Left = CommentSetting.PositionLeft;
 
             //If current file doesn't exist this is probably the first start up of the day.
-            if (!File.Exists(_todaysLog))
-                displayPreviousDayLog();
-
-            if (_isFirstRun)
-            {
-                InsertLog("*Application Start*");
-                _isFirstRun = false;
-            }
+            if (CommentSetting.DisplayPreviousLog && !File.Exists(_todaysLog))
+                LogDisplayer.DisplayPreviousDayLog();
 
             txtComments.Text = default(string);
-        }
-
-        private static string getCommentLogName(DateTime date)
-        {
-            return date.ToString("yyyyMMdd") + ".txt";
-        }
-
-        private void ShowTodaysLog()
-        {
-            if (!File.Exists(_todaysLog))
-                txtComments.Text = "No log for today.";
-            else
-                System.Diagnostics.Process.Start(CommentSetting.TextEditor, _todaysLog);
-        }
-
-        private void ShowAllLogs()
-        {
-            if (!Directory.Exists(CommentSetting.CommentLogLocation))
-                Directory.CreateDirectory(CommentSetting.CommentLogLocation);
-
-            System.Diagnostics.Process.Start("explorer.exe", CommentSetting.CommentLogLocation);
         }
 
         private void Comments_MouseEnter(object sender, EventArgs e)
@@ -82,7 +58,7 @@ namespace Comments
             this.Opacity = 0.15;
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void btnSubmit_Click(object sender, EventArgs e)
         {
             if (!String.IsNullOrWhiteSpace(txtComments.Text))
             {
@@ -92,13 +68,15 @@ namespace Comments
                 if (comment == "/exit" || comment == "/e" || comment == "/x")
                     Application.Exit();
                 else if (comment == "/todayslog" || comment == "/t")
-                    ShowTodaysLog();
+                    LogDisplayer.ShowTodaysLog(_todaysLog);
                 else if (comment == "/logs" || comment == "/l")
-                    ShowAllLogs();
+                    LogDisplayer.ShowAllLogs();
                 else if (comment == "/help" || comment == "/h")
-                    MessageBox.Show(_messageText, "Help Menu");
+                    displayHelpMenu();
                 else if (comment == "/yolo" || comment == "/y" || comment == "/yesterday")
-                    displayPreviousDayLog();
+                    LogDisplayer.DisplayPreviousDayLog();
+                else if (comment == "/reminder" || comment == "/r")
+                    displayReminderSettings();
                 else if (direction != Direction.Nondirectional)
                     changeFormPosition(direction, comment);
                 else
@@ -106,6 +84,24 @@ namespace Comments
 
                 txtComments.Text = string.Empty;
                 txtComments.Focus();
+            }
+        }
+
+        private void displayHelpMenu()
+        {
+            using (var help = new Help())
+            {
+                help.ShowDialog();
+                reminderTimer.Interval = CommentSetting.ReminderIntervalInMilliseconds;
+            }
+        }
+
+        private void displayReminderSettings()
+        {
+            using (var reminderForm = new Reminder())
+            {
+                reminderForm.ShowDialog();
+                reminderTimer.Interval = CommentSetting.ReminderIntervalInMilliseconds;
             }
         }
 
@@ -142,15 +138,6 @@ namespace Comments
                 return Direction.Nondirectional;
         }
 
-        private void displayPreviousDayLog()
-        {
-            var yesterday = DateTime.Now.AddDays(-1);
-            var yesterdaysLog = Path.Combine(CommentSetting.CommentLogLocation, getCommentLogName(yesterday));
-
-            if(File.Exists(yesterdaysLog))
-                System.Diagnostics.Process.Start(CommentSetting.TextEditor, yesterdaysLog);           
-        }
-
         public void InsertLog(string comment)
         {
             //Create directory if needed.
@@ -167,7 +154,14 @@ namespace Comments
 
         private void Comments_FormClosing(object sender, FormClosingEventArgs e)
         {
-            InsertLog("*Application Close*");
+            if(reminderTimer.Enabled == true)
+                reminderTimer.Stop();
+
+            reminderTimer.Dispose();
+#if !DEBUG
+            if (CommentSetting.LogApplicationStartAndStop)
+                InsertLog("*Application Close*");
+#endif
         }
     }
 }

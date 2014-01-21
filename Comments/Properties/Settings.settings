@@ -14,5 +14,20 @@
     <Setting Name="textEditor" Type="System.String" Scope="User">
       <Value Profile="(Default)">Notepad++.exe</Value>
     </Setting>
+    <Setting Name="reminderMinutes" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">60</Value>
+    </Setting>
+    <Setting Name="reminderText" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Don't forget to log your time.\nDon't forget to stretch.</Value>
+    </Setting>
+    <Setting Name="displayPreviousLog" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="logApplicationStartAndStop" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="reminderEnabled" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
