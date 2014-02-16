@@ -12,6 +12,7 @@ namespace Comments
 {
     public partial class Comments : Form
     {
+        private Point _screenPosition;
         Timer reminderTimer = new Timer();
         enum Direction { Up, Down, Left, Right, Nondirectional };
         string _todaysLog = Path.Combine(CommentSetting.CommentLogLocation, LogDisplayer.GetCommentLogName(DateTime.Now));
@@ -79,6 +80,8 @@ namespace Comments
                     displayReminderSettings();
                 else if (comment.Contains("/pos") || comment.Contains("/position"))
                     positionForm(comment);
+                else if (comment.Contains("/screen"))
+                    changeScreen(comment);
                 else if (direction != Direction.Nondirectional)
                     changeFormPosition(direction, comment);
                 else
@@ -87,6 +90,18 @@ namespace Comments
                 txtComments.Text = string.Empty;
                 txtComments.Focus();
             }
+        }
+
+        private void changeScreen(string comment)
+        {
+            string[] split = comment.Split((char)32);
+            int screenNumber = 0;
+
+            if (split.Length < 2 || int.TryParse(split[1], out screenNumber) == false || screenNumber >= Screen.AllScreens.Length)
+                return;
+
+            var screen = Screen.AllScreens[screenNumber];
+            this.Location = new Point(_screenPosition.X + screen.WorkingArea.Left, _screenPosition.Y + screen.WorkingArea.Top);
         }
 
         private void positionForm(string comment)
