@@ -77,6 +77,8 @@ namespace Comments
                     LogDisplayer.DisplayPreviousDayLog();
                 else if (comment == "/reminder" || comment == "/r")
                     displayReminderSettings();
+                else if (comment.Contains("/pos") || comment.Contains("/position"))
+                    positionForm(comment);
                 else if (direction != Direction.Nondirectional)
                     changeFormPosition(direction, comment);
                 else
@@ -84,6 +86,34 @@ namespace Comments
 
                 txtComments.Text = string.Empty;
                 txtComments.Focus();
+            }
+        }
+
+        private void positionForm(string comment)
+        {
+            string[] split = comment.Split((char)32);
+
+            if (split.Length < 2) 
+                return;
+
+            ScreenPosition pos = ScreenPositionHelper.GetFromString(split[1]);
+            Rectangle workingArea = Screen.GetWorkingArea(this);
+
+            switch (pos) 
+            {
+                case ScreenPosition.BottomRight:
+                    this.Location = new Point(workingArea.Right - Size.Width,
+                                              workingArea.Bottom - Size.Height);
+                    break;
+                case ScreenPosition.BottomLeft:
+                    this.Location = new Point(0, workingArea.Bottom - Size.Height);
+                    break;
+                case ScreenPosition.TopRight:
+                    this.Location = new Point(workingArea.Right - Size.Width, 0);
+                    break;
+                case ScreenPosition.TopLeft:
+                    this.Location = new Point(0, 0);
+                    break;
             }
         }
 
