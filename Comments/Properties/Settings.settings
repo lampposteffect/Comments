@@ -29,5 +29,11 @@
     <Setting Name="reminderEnabled" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
+    <Setting Name="Screen" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="Position" Type="System.String" Scope="User">
+      <Value Profile="(Default)">TopLeft</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

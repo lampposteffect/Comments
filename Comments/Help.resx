@@ -124,6 +124,12 @@
 /yolo or /y for Yesterday's Log.
 /help or /h to Display This Again.
 /reminder or /r to Display Reminder Settings.
+/pos [option] or /position [option]:    
+    TopLeft
+    TopRight    
+    BottomLeft
+    BottomRight
+/screen [number] for which monitor
 Repositioning:
     right #
     left #
