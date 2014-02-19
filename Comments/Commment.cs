@@ -12,6 +12,8 @@ namespace Comments
 {
     public partial class Comments : Form
     {
+        private Screen _screen;
+        private ScreenPosition _screenPosition;
         Timer reminderTimer = new Timer();
         enum Direction { Up, Down, Left, Right, Nondirectional };
         string _todaysLog = Path.Combine(CommentSetting.CommentLogLocation, LogDisplayer.GetCommentLogName(DateTime.Now));
@@ -40,6 +42,9 @@ namespace Comments
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Top = CommentSetting.PositionTop;
             this.Left = CommentSetting.PositionLeft;
+
+            _screenPosition = ScreenPositionHelper.GetFromString(CommentSetting.Position);
+            changeScreen(CommentSetting.Screen);
 
             //If current file doesn't exist this is probably the first start up of the day.
             if (CommentSetting.DisplayPreviousLog && !File.Exists(_todaysLog))
@@ -77,6 +82,10 @@ namespace Comments
                     LogDisplayer.DisplayPreviousDayLog();
                 else if (comment == "/reminder" || comment == "/r")
                     displayReminderSettings();
+                else if (comment.Contains("/pos") || comment.Contains("/position"))
+                    positionForm(comment);
+                else if (comment.Contains("/screen"))
+                    changeScreen(comment);
                 else if (direction != Direction.Nondirectional)
                     changeFormPosition(direction, comment);
                 else
@@ -85,6 +94,59 @@ namespace Comments
                 txtComments.Text = string.Empty;
                 txtComments.Focus();
             }
+        }
+
+        private void changeScreen(string comment)
+        {
+
+            string[] split = comment.Split((char)32);
+            int screenNumber = 0;
+
+            if (split.Length < 2 || int.TryParse(split[1], out screenNumber) == false || screenNumber >= Screen.AllScreens.Length)
+                return;
+
+            CommentSetting.Screen = screenNumber;
+            changeScreen(CommentSetting.Screen);
+        }
+
+        private void changeScreen(int screenNumber)
+        {
+            _screen = Screen.AllScreens[CommentSetting.Screen];
+            positionForm(_screenPosition);
+        }
+
+        private void positionForm(string comment)
+        {
+            string[] split = comment.Split((char)32);
+
+            if (split.Length < 2) 
+                return;
+
+            CommentSetting.Position = split[1];
+            ScreenPosition pos = ScreenPositionHelper.GetFromString(CommentSetting.Position);
+            positionForm(pos);
+        }
+
+        private void positionForm(ScreenPosition pos)
+        {
+            switch (pos) 
+            {
+                case ScreenPosition.BottomRight:
+                    this.Location = new Point(_screen.WorkingArea.Right - Size.Width,
+                                              _screen.WorkingArea.Bottom - Size.Height);
+                    break;
+                case ScreenPosition.BottomLeft:
+                    this.Location = new Point(_screen.WorkingArea.Left, _screen.WorkingArea.Bottom - Size.Height);
+                    break;
+                case ScreenPosition.TopRight:
+                    this.Location = new Point(_screen.WorkingArea.Right - Size.Width, _screen.WorkingArea.Top);
+                    break;
+                case ScreenPosition.TopLeft:
+                    this.Location = new Point(_screen.WorkingArea.Left, _screen.WorkingArea.Top);
+                    break;
+            }
+
+            _screenPosition = pos;
         }
 
         private void displayHelpMenu()
@@ -158,6 +220,7 @@ namespace Comments
                 reminderTimer.Stop();
 
             reminderTimer.Dispose();
+
 #if !DEBUG
             if (CommentSetting.LogApplicationStartAndStop)
                 InsertLog("*Application Close*");

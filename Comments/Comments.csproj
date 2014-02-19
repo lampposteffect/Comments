@@ -87,6 +87,7 @@
     <Compile Include="Reminder.Designer.cs">
       <DependentUpon>Reminder.cs</DependentUpon>
     </Compile>
+    <Compile Include="ScreenPosition.cs" />
     <EmbeddedResource Include="Commment.resx">
       <DependentUpon>Commment.cs</DependentUpon>
     </EmbeddedResource>

@@ -10,8 +10,8 @@ namespace Comments
         public static string CommentLogLocation
         {
             get { return Properties.Settings.Default.CommentLogLocation; }
-            set 
-            { 
+            set
+            {
                 Properties.Settings.Default.CommentLogLocation = value;
                 Properties.Settings.Default.Save();
             }
@@ -19,8 +19,8 @@ namespace Comments
         public static int PositionTop
         {
             get { return Properties.Settings.Default.positionTop; }
-            set 
-            { 
+            set
+            {
                 Properties.Settings.Default.positionTop = value;
                 Properties.Settings.Default.Save();
             }
@@ -28,8 +28,8 @@ namespace Comments
         public static int PositionLeft
         {
             get { return Properties.Settings.Default.positionLeft; }
-            set 
-            { 
+            set
+            {
                 Properties.Settings.Default.positionLeft = value;
                 Properties.Settings.Default.Save();
             }
@@ -37,8 +37,8 @@ namespace Comments
         public static string TextEditor
         {
             get { return Properties.Settings.Default.textEditor; }
-            set 
-            { 
+            set
+            {
                 Properties.Settings.Default.textEditor = value;
                 Properties.Settings.Default.Save();
             }
@@ -89,6 +89,24 @@ namespace Comments
             set
             {
                 Properties.Settings.Default.reminderEnabled = value;
+                Properties.Settings.Default.Save();
+            }
+        }
+        public static string Position
+        {
+            get { return Properties.Settings.Default.Position; }
+            set
+            {
+                Properties.Settings.Default.Position = value;
+                Properties.Settings.Default.Save();
+            }
+        }
+        public static int Screen
+        {
+            get { return Properties.Settings.Default.Screen; }
+            set
+            {
+                Properties.Settings.Default.Screen = value;
                 Properties.Settings.Default.Save();
             }
         }
