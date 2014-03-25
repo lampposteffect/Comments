@@ -15,7 +15,7 @@ namespace Comments
         private Screen _screen;
         private ScreenPosition _screenPosition;
         Timer reminderTimer = new Timer();
-        enum Direction { Up, Down, Left, Right, Nondirectional };
+        
         string _todaysLog = Path.Combine(CommentSetting.CommentLogLocation, LogDisplayer.GetCommentLogName(DateTime.Now));
 
         public Comments()
@@ -40,11 +40,9 @@ namespace Comments
         {
             //Position textbox
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-            this.Top = CommentSetting.PositionTop;
-            this.Left = CommentSetting.PositionLeft;
-
             _screenPosition = ScreenPositionHelper.GetFromString(CommentSetting.Position);
-            changeScreen(CommentSetting.Screen);
+            _screen = Screen.AllScreens[CommentSetting.Screen];
+            ScreenPositionHelper.UpdateScreenPosition(this, _screen);
 
             //If current file doesn't exist this is probably the first start up of the day.
             if (CommentSetting.DisplayPreviousLog && !File.Exists(_todaysLog))
@@ -68,7 +66,7 @@ namespace Comments
             if (!String.IsNullOrWhiteSpace(txtComments.Text))
             {
                 var comment = txtComments.Text.Trim();
-                Direction direction = directionTranslator(comment);
+                Direction direction = DirectionTranslator.TranslateString(comment);
 
                 if (comment == "/exit" || comment == "/e" || comment == "/x")
                     Application.Exit();
@@ -85,7 +83,10 @@ namespace Comments
                 else if (comment.Contains("/pos") || comment.Contains("/position"))
                     positionForm(comment);
                 else if (comment.Contains("/screen"))
+                {
                     changeScreen(comment);
+                    ScreenPositionHelper.UpdateScreenPosition(this, _screen);
+                }
                 else if (direction != Direction.Nondirectional)
                     changeFormPosition(direction, comment);
                 else
@@ -98,7 +99,7 @@ namespace Comments
 
         private void changeScreen(string comment)
         {
-
+            //Split by a space.
             string[] split = comment.Split((char)32);
             int screenNumber = 0;
 
@@ -106,47 +107,20 @@ namespace Comments
                 return;
 
             CommentSetting.Screen = screenNumber;
-            changeScreen(CommentSetting.Screen);
-        }
-
-        private void changeScreen(int screenNumber)
-        {
             _screen = Screen.AllScreens[CommentSetting.Screen];
-            positionForm(_screenPosition);
         }
 
         private void positionForm(string comment)
         {
+            //Split by a space.
             string[] split = comment.Split((char)32);
 
             if (split.Length < 2) 
                 return;
-
-            CommentSetting.Position = split[1];
-            ScreenPosition pos = ScreenPositionHelper.GetFromString(CommentSetting.Position);
-            positionForm(pos);
-        }
-
-        private void positionForm(ScreenPosition pos)
-        {
-            switch (pos) 
-            {
-                case ScreenPosition.BottomRight:
-                    this.Location = new Point(_screen.WorkingArea.Right - Size.Width,
-                                              _screen.WorkingArea.Bottom - Size.Height);
-                    break;
-                case ScreenPosition.BottomLeft:
-                    this.Location = new Point(_screen.WorkingArea.Left, _screen.WorkingArea.Bottom - Size.Height);
-                    break;
-                case ScreenPosition.TopRight:
-                    this.Location = new Point(_screen.WorkingArea.Right - Size.Width, _screen.WorkingArea.Top);
-                    break;
-                case ScreenPosition.TopLeft:
-                    this.Location = new Point(_screen.WorkingArea.Left, _screen.WorkingArea.Top);
-                    break;
-            }
-
-            _screenPosition = pos;
+            
+            ScreenPosition position = ScreenPositionHelper.GetFromString(split[1]);
+            ScreenPositionHelper.DockForm(this, this._screen, position);
+            CommentSetting.Position = position.ToString();
         }
 
         private void displayHelpMenu()
@@ -172,32 +146,17 @@ namespace Comments
             int numberOfPixels = Int32.Parse(Regex.Match(comment, @"\d+$").Value);
 
             if (direction == Direction.Up)
-                CommentSetting.PositionTop = this.Top - numberOfPixels;
+                CommentSetting.PositionTop -= numberOfPixels;
             else if (direction == Direction.Right)
-                CommentSetting.PositionLeft = this.Left + numberOfPixels;
+                CommentSetting.PositionLeft += numberOfPixels;
             else if (direction == Direction.Left)
-                CommentSetting.PositionLeft = this.Left - numberOfPixels;
+                CommentSetting.PositionLeft -= numberOfPixels;
             else if (direction == Direction.Down)
-                CommentSetting.PositionTop = this.Top + numberOfPixels;            
+                CommentSetting.PositionTop += numberOfPixels;            
             else
                 throw new Exception("Wtf are you doing passing a nondirectional direction to this method?");
 
-            this.Top = CommentSetting.PositionTop;
-            this.Left = CommentSetting.PositionLeft;
-        }
-
-        private Direction directionTranslator(string checkText)
-        {
-            if (Regex.Match(checkText, @"^up \d+$").Success)
-                return Direction.Up;
-            else if (Regex.Match(checkText, @"^left \d+$").Success)
-                return Direction.Left;
-            else if (Regex.Match(checkText, @"^right \d+$").Success)
-                return Direction.Right;
-            else if (Regex.Match(checkText, @"^down \d+$").Success)
-                return Direction.Down;
-            else
-                return Direction.Nondirectional;
+            ScreenPositionHelper.UpdateScreenPosition(this, _screen);
         }
 
         public void InsertLog(string comment)

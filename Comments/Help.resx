@@ -131,9 +131,9 @@
     BottomRight
 /screen [number] for which monitor
 Repositioning:
-    right #
-    left #
-    up #
-    down #</value>
+    /right #
+    /left #
+    /up #
+    /down #</value>
   </data>
 </root>

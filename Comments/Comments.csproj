@@ -49,8 +49,10 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <RunCodeAnalysis>true</RunCodeAnalysis>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
+    <CodeAnalysisIgnoreGeneratedCode>false</CodeAnalysisIgnoreGeneratedCode>
+    <DocumentationFile>bin\Release\Comments.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -72,6 +74,9 @@
     <Compile Include="Commment.Designer.cs">
       <DependentUpon>Commment.cs</DependentUpon>
     </Compile>
+    <Compile Include="DirectionTranslator.cs" />
+    <Compile Include="enums\Direction.cs" />
+    <Compile Include="enums\ScreenPosition.cs" />
     <Compile Include="Help.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -87,7 +92,7 @@
     <Compile Include="Reminder.Designer.cs">
       <DependentUpon>Reminder.cs</DependentUpon>
     </Compile>
-    <Compile Include="ScreenPosition.cs" />
+    <Compile Include="ScreenPositionHelper.cs" />
     <EmbeddedResource Include="Commment.resx">
       <DependentUpon>Commment.cs</DependentUpon>
     </EmbeddedResource>
