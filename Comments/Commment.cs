@@ -49,6 +49,7 @@ namespace Comments
                 LogDisplayer.DisplayPreviousDayLog();
 
             txtComments.Text = default(string);
+            this.Opacity = CommentSetting.Opacity;
         }
 
         private void Comments_MouseEnter(object sender, EventArgs e)
@@ -58,7 +59,7 @@ namespace Comments
 
         private void Comments_MouseLeave(object sender, EventArgs e)
         {
-            this.Opacity = 0.15;
+            this.Opacity = CommentSetting.Opacity;
         }
 
         private void btnSubmit_Click(object sender, EventArgs e)
@@ -129,6 +130,7 @@ namespace Comments
             {
                 help.ShowDialog();
                 reminderTimer.Interval = CommentSetting.ReminderIntervalInMilliseconds;
+                this.Opacity = CommentSetting.Opacity;
             }
         }
 

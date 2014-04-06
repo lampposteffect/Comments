@@ -35,5 +35,8 @@
     <Setting Name="Position" Type="System.String" Scope="User">
       <Value Profile="(Default)">TopLeft</Value>
     </Setting>
+    <Setting Name="Opacity" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">0.1</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

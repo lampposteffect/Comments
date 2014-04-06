@@ -110,5 +110,14 @@ namespace Comments
                 Properties.Settings.Default.Save();
             }
         }
+        public static double Opacity
+        {
+            get { return Properties.Settings.Default.Opacity; }
+            set
+            {
+                Properties.Settings.Default.Opacity = value;
+                Properties.Settings.Default.Save();
+            }
+        }
     }
 }

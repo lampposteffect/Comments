@@ -16,6 +16,7 @@ namespace Comments
             InitializeComponent();
             cbxPreviousLogs.Checked = CommentSetting.DisplayPreviousLog;
             cbxStartAndClose.Checked = CommentSetting.LogApplicationStartAndStop;
+            updateOpacity();
         }
 
         private void btnSubmit_Click(object sender, EventArgs e)
@@ -36,6 +37,22 @@ namespace Comments
             {
                 reminder.ShowDialog();
             }
+        }
+
+        private void tkbOpacity_Scroll(object sender, EventArgs e)
+        {
+            if (tkbOpacity.Value == 0)
+                CommentSetting.Opacity = 0.0;
+            else
+                CommentSetting.Opacity = (double)tkbOpacity.Value / (double)20;
+
+            updateOpacity();
+        }
+
+        private void updateOpacity()
+        {
+            tkbOpacity.Value = Convert.ToInt32(CommentSetting.Opacity * (double)20);
+            lblOpacity.Text = "Opacity: " + Convert.ToString(CommentSetting.Opacity);
         }
     }
 }
