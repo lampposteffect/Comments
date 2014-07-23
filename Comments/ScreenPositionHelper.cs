@@ -60,20 +60,23 @@ namespace Comments
             var leftPoint = 0;
             var topPoint = 0;
 
-            if (((screen.WorkingArea.Left + CommentSetting.PositionLeft) + form.Width) > screen.WorkingArea.Width)
-                CommentSetting.PositionLeft = screen.WorkingArea.Width - form.Width;
+            if (screen != null && form != null)
+            {
+                if (((screen.WorkingArea.Left + CommentSetting.PositionLeft) + form.Width) > screen.WorkingArea.Width)
+                    CommentSetting.PositionLeft = screen.WorkingArea.Width - form.Width;
 
-            if (((screen.WorkingArea.Top + CommentSetting.PositionTop) + form.Height) > screen.WorkingArea.Height)
-                CommentSetting.PositionTop = screen.WorkingArea.Height - form.Height;
+                if (((screen.WorkingArea.Top + CommentSetting.PositionTop) + form.Height) > screen.WorkingArea.Height)
+                    CommentSetting.PositionTop = screen.WorkingArea.Height - form.Height;
 
-            if ((screen.WorkingArea.Top + CommentSetting.PositionTop) < screen.WorkingArea.Top)
-                CommentSetting.PositionTop = 0;
+                if ((screen.WorkingArea.Top + CommentSetting.PositionTop) < screen.WorkingArea.Top)
+                    CommentSetting.PositionTop = 0;
 
-            if ((screen.WorkingArea.Left + CommentSetting.PositionLeft) < screen.WorkingArea.Left)
-                CommentSetting.PositionLeft = 0;
+                if ((screen.WorkingArea.Left + CommentSetting.PositionLeft) < screen.WorkingArea.Left)
+                    CommentSetting.PositionLeft = 0;
 
-            leftPoint = screen.WorkingArea.Left + CommentSetting.PositionLeft;
-            topPoint = screen.WorkingArea.Top + CommentSetting.PositionTop;
+                leftPoint = screen.WorkingArea.Left + CommentSetting.PositionLeft;
+                topPoint = screen.WorkingArea.Top + CommentSetting.PositionTop;
+            }
 
             form.Location = new Point(leftPoint, topPoint);
         }

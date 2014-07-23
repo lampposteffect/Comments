@@ -25,10 +25,8 @@ namespace Comments
             reminderTimer.Enabled = CommentSetting.ReminderEnabled;
             reminderTimer.Tick += reminder_Tick;
 
-#if !DEBUG
             if (CommentSetting.LogApplicationStartAndStop)
                 InsertLog("*Application Start*");
-#endif
         }
 
         void reminder_Tick(object sender, EventArgs e)
@@ -41,12 +39,13 @@ namespace Comments
             //Position textbox
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             _screenPosition = ScreenPositionHelper.GetFromString(CommentSetting.Position);
-            _screen = Screen.AllScreens[CommentSetting.Screen];
-            ScreenPositionHelper.UpdateScreenPosition(this, _screen);
 
-            //If current file doesn't exist this is probably the first start up of the day.
-            if (CommentSetting.DisplayPreviousLog && !File.Exists(_todaysLog))
-                LogDisplayer.DisplayPreviousDayLog();
+            if (Screen.AllScreens.Length == 1)
+                _screen = Screen.PrimaryScreen;
+            else
+                _screen = Screen.AllScreens[CommentSetting.Screen];
+
+            ScreenPositionHelper.UpdateScreenPosition(this, _screen);
 
             txtComments.Text = default(string);
             this.Opacity = CommentSetting.Opacity;
@@ -71,14 +70,10 @@ namespace Comments
 
                 if (comment == "/exit" || comment == "/e" || comment == "/x")
                     Application.Exit();
-                else if (comment == "/todayslog" || comment == "/t")
-                    LogDisplayer.ShowTodaysLog(_todaysLog);
-                else if (comment == "/logs" || comment == "/l")
-                    LogDisplayer.ShowAllLogs();
+                else if (comment == "/review" || comment == "/time" || comment == "/r" || comment == "/tr" || comment == "/timereview")
+                    displayTimeReview();
                 else if (comment == "/help" || comment == "/h")
                     displayHelpMenu();
-                else if (comment == "/yolo" || comment == "/y" || comment == "/yesterday")
-                    LogDisplayer.DisplayPreviousDayLog();
                 else if (comment == "/reminder" || comment == "/r")
                     displayReminderSettings();
                 else if (comment.Contains("/pos") || comment.Contains("/position"))
@@ -95,6 +90,14 @@ namespace Comments
 
                 txtComments.Text = string.Empty;
                 txtComments.Focus();
+            }
+        }
+
+        private void displayTimeReview()
+        {
+            using (var timeReview = new TimeReview())
+            {
+                timeReview.ShowDialog();
             }
         }
 

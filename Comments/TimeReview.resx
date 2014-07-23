@@ -117,21 +117,4 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="lblCommands.Text" xml:space="preserve">
-    <value>/exit, /e, or /x to Exit Application.
-/timereview, /tr to Review Time.
-/help or /h to Display This Again.
-/reminder or /r to Display Reminder Settings.
-/pos [option] or /position [option]:    
-    TopLeft
-    TopRight    
-    BottomLeft
-    BottomRight
-/screen [number] for which monitor
-Repositioning:
-    /right #
-    /left #
-    /up #
-    /down #</value>
-  </data>
 </root>

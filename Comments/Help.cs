@@ -14,14 +14,12 @@ namespace Comments
         public Help()
         {
             InitializeComponent();
-            cbxPreviousLogs.Checked = CommentSetting.DisplayPreviousLog;
             cbxStartAndClose.Checked = CommentSetting.LogApplicationStartAndStop;
             updateOpacity();
         }
 
         private void btnSubmit_Click(object sender, EventArgs e)
         {
-            CommentSetting.DisplayPreviousLog = cbxPreviousLogs.Checked;
             CommentSetting.LogApplicationStartAndStop = cbxStartAndClose.Checked;
             btnCancel_Click(sender, e);
         }
@@ -53,6 +51,33 @@ namespace Comments
         {
             tkbOpacity.Value = Convert.ToInt32(CommentSetting.Opacity * (double)20);
             lblOpacity.Text = "Opacity: " + Convert.ToString(CommentSetting.Opacity);
+        }
+
+        private void btnTimeReview_Click(object sender, EventArgs e)
+        {
+            using (var timeReview = new TimeReview())
+            {
+                timeReview.ShowDialog();
+            }
+        }
+
+        private void btnLogLocation_Click(object sender, EventArgs e)
+        {
+            using (var fileBrowser = new FolderBrowserDialog())
+            {
+                fileBrowser.ShowDialog();
+                CommentSetting.CommentLogLocation = fileBrowser.SelectedPath;
+            }
+        }
+
+        private void btnDontTouch_Click(object sender, EventArgs e)
+        {
+            var random = new Random(DateTime.Now.Millisecond);
+            var red = random.Next(0, 255);
+            var blue = random.Next(0, 255);
+            var green = random.Next(0, 255);
+            btnDontTouch.ForeColor = Color.FromArgb(red, green, blue);
+            btnDontTouch.BackColor = Color.FromArgb(blue, red, green);
         }
     }
 }
